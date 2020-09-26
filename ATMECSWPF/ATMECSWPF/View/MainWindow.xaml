@@ -1,0 +1,72 @@
+﻿<Window x:Class="ATMECSWPF.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ATMECSWPF.View"
+        xmlns:view="clr-namespace:ATMECSWPF.View"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--Buttons-->
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+            <Button Command="{Binding AddContactCommand}" 
+            Content="Add Contact" Margin="10,10,10,10" Foreground="Blue"/>
+        </StackPanel>
+
+        <!--Navigation-->
+        <view:NavigationView DataContext="{Binding NavigationViewModel}" Grid.Row="1" Grid.Column="0"/>
+
+        <GridSplitter Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Width="5"  HorizontalAlignment="Center"/>
+
+        <!--Tabs-->
+        <TabControl ItemsSource="{Binding ContactEditViewModels}"
+                SelectedItem="{Binding SelectedContactEditViewModel, Mode=TwoWay}" 
+                Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" SelectedIndex="0">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Contact.FirstName}"/>
+                        <TextBlock Text="{Binding Contact.LastName}" Margin="5 0 20 0"/>
+                        <Button Content="X" Command="{Binding RelativeSource=
+                                  {RelativeSource FindAncestor,
+                                  AncestorType={x:Type TabControl}},
+                                  Path=DataContext.CloseContactTabCommand}"
+                                CommandParameter="{Binding}"
+                                Width="20" Height="20" FontWeight="Bold" FontSize="12"
+                                 Padding="0">
+                        </Button>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <view:ContactEditView/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+
+        
+    </Grid>
+</Window>
